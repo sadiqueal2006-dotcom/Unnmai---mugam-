@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="ta">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>உண்மை முகம் - நிர்வாகப் பகுதி (Admin Dashboard)</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #b30000;
+            --bg-dark: #121212;
+            --card-bg: #1e1e1e;
+            --text-light: #ffffff;
+            --text-gray: #b0b0b0;
+        }
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text-light);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 15px;
+        }
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid var(--primary);
+            padding-bottom: 15px;
+            margin-bottom: 20px;
+        }
+        h1 {
+            color: #ff4d4d;
+            font-size: 22px;
+            margin: 0;
+        }
+        .card {
+            background: var(--card-bg);
+            border: 1px solid #333;
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+        .card h2 {
+            font-size: 16px;
+            color: #ff4d4d;
+            margin-top: 0;
+            border-bottom: 1px solid #333;
+            padding-bottom: 8px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-size: 13px;
+            color: var(--text-gray);
+        }
+        input, textarea, select {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 12px;
+            background: #2a2a2a;
+            border: 1px solid #444;
+            color: #fff;
+            border-radius: 6px;
+            box-sizing: border-box;
+            font-size: 14px;
+        }
+        button {
+            background: var(--primary);
+            color: #fff;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 14px;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        button:hover {
+            opacity: 0.9;
+        }
+        .btn-secondary {
+            background: #333;
+            margin-top: 10px;
+        }
+        .news-list-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #252525;
+            padding: 10px;
+            margin-bottom: 8px;
+            border-radius: 6px;
+            font-size: 13px;
+        }
+        .news-list-item button {
+            width: auto;
+            padding: 6px 12px;
+            background: #b30000;
+            font-size: 12px;
+        }
+        .preview-img {
+            max-width: 100px;
+            max-height: 100px;
+            margin-top: 5px;
+            display: none;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1><i class="fa-solid fa-user-gear"></i> உண்மை முகம் - அட்மின்</h1>
+        <a href="index.html" style="color: #fff; text-decoration: none; background: #333; padding: 8px 12px; border-radius: 6px; font-size: 13px;"><i class="fa-solid fa-house"></i> தளம் செல்க</a>
+    </div>
+
+    <!-- Login Box -->
+    <div id="login-box" class="card">
+        <h2>அட்மின் உள்நுழைவு (Admin Login)</h2>
+        <label>கடவுச்சொல் (PIN - Default: 1234)</label>
+        <input type="password" id="pin-input" placeholder="Enter PIN">
+        <button onclick="checkLogin()"><i class="fa-solid fa-lock-open"></i> உள்நுழை (Login)</button>
+    </div>
+
+    <!-- Admin Dashboard (Hidden until login) -->
+    <div id="admin-dashboard" style="display: none;">
+        
+        <!-- Add News Card -->
+        <div class="card">
+            <h2><i class="fa-solid fa-newspaper"></i> புதிய செய்தி பதிவேற்றுக (Add News)</h2>
+            <label>செய்தி தலைப்பு (Title)</label>
+            <input type="text" id="news-title" placeholder="தலைப்பை இங்கே எழுதுங்கள்">
+            
+            <label>பிரிவு (Category)</label>
+            <select id="news-category">
+                <option value="கோவை">கோவை</option>
+                <option value="தமிழ்நாடு">தமிழ்நாடு</option>
+                <option value="தேசியச் செய்தி">தேசியச் செய்தி</option>
+                <option value="சிறப்புச் செய்தி">சிறப்புச் செய்தி</option>
+            </select>
+
+            <label>செய்தி விவரம் (Description)</label>
+            <textarea id="news-desc" rows="4" placeholder="செய்தி விவரங்களை விரிவாக எழுதவும்..."></textarea>
+
+            <label>நிருபர் பெயர் (Reporter)</label>
+            <input type="text" id="news-reporter" value="Sadiq">
+
+            <label>படம் சேர்க்க (Upload Image)</label>
+            <input type="file" id="news-img-file" accept="image/*" onchange="previewImage(event)">
+            <img id="img-preview" class="preview-img">
+            <input type="hidden" id="news-img-base64">
+
+            <button onclick="addNewNews()"><i class="fa-solid fa-plus"></i> செய்தியை வெளியிடு (Publish News)</button>
+        </div>
+
+        <!-- Ticker Settings -->
+        <div class="card">
+            <h2><i class="fa-solid fa-bullhorn"></i> முக்கிய செய்தி ஓடும் பட்டி (Breaking Ticker)</h2>
+            <label>முக்கிய செய்தி உரை (Ticker Text)</label>
+            <input type="text" id="ticker-input" value="உண்மை முகம் செய்தி தளத்திற்கு உங்களை வரவேற்கிறோம்.">
+            <button onclick="saveTicker()"><i class="fa-solid fa-floppy-disk"></i> பட்டியை மாற்று (Update Ticker)</button>
+        </div>
+
+        <!-- Published News Management -->
+        <div class="card">
+            <h2><i class="fa-solid fa-list"></i> வெளியிடப்பட்ட செய்திகள் (Manage News)</h2>
+            <div id="manage-news-list">
+                <!-- Dynamic list -->
+            </div>
+        </div>
+
+        <!-- Today information -->
+        <div class="card">
+            <h2><i class="fa-solid fa-calendar-days"></i> இன்றைய நாள் விவரங்கள்</h2>
+            <label>சிறப்பு நாள்</label><input id="today-special" placeholder="எ.கா. முக்கிய நாள் / திருநாள்">
+            <label>நல்ல நேரம்</label><input id="today-good" placeholder="நேரத்தை உள்ளிடவும்">
+            <label>ராகு காலம்</label><input id="today-rahu" placeholder="நேரத்தை உள்ளிடவும்">
+            <label>எமகண்டம்</label><input id="today-yama" placeholder="நேரத்தை உள்ளிடவும்">
+            <label>குறிப்புகள்</label><textarea id="today-notes" rows="2"></textarea>
+            <label>இன்றைய சிந்தனை</label><textarea id="today-thought" rows="2"></textarea>
+            <button onclick="saveToday()"><i class="fa-solid fa-floppy-disk"></i> இன்றைய நாள் சேமி</button>
+        </div>
+        <!-- Ads management -->
+        <div class="card">
+            <h2><i class="fa-solid fa-bullhorn"></i> புதிய விளம்பரம்</h2>
+            <label>விளம்பரத் தலைப்பு</label><input id="ad-title" placeholder="விளம்பரத் தலைப்பு">
+            <label>வகை</label><input id="ad-category" placeholder="வணிகம் / வேலை / சொத்து">
+            <label>விளம்பர விவரம்</label><textarea id="ad-description" rows="3"></textarea>
+            <label>விளம்பரப் படம் (Choose File – விருப்பம்)</label><input id="ad-image-file" type="file" accept="image/*" onchange="previewAdImage(event)">
+            <img id="ad-image-preview" class="preview-img" alt="விளம்பரப் படம்" style="display:none;max-width:100%;max-height:220px;margin:8px 0">
+            <label>வெளி இணைப்பு (விருப்பம்)</label><input id="ad-link" type="url" placeholder="https://...">
+            <button onclick="addAd()"><i class="fa-solid fa-plus"></i> விளம்பரம் சேர்</button>
+            <div id="manage-ads-list" style="margin-top:12px"></div>
+        </div>
+        <!-- E-Paper management -->
+        <div class="card">
+            <h2><i class="fa-regular fa-newspaper"></i> E-Paper பதிப்பு சேர்க்க</h2>
+            <label>பதிப்பு தலைப்பு</label><input id="ep-title" placeholder="உண்மை முகம் – இன்றைய பதிப்பு">
+            <label>தேதி (YYYY-MM-DD)</label><input id="ep-date" type="date">
+            <label>PDF கோப்பைத் தேர்வு செய்க (Choose File – விருப்பம்)</label><input id="ep-file" type="file" accept="application/pdf,.pdf">
+            <label>PDF URL (விருப்பம் – கோப்பு தேர்வு செய்யாவிட்டால் மட்டும்)</label><input id="ep-url" type="url" placeholder="https://.../newspaper.pdf">
+            <label>சிறு விளக்கம்</label><textarea id="ep-description" rows="2"></textarea>
+            <button onclick="addEdition()"><i class="fa-solid fa-plus"></i> E-Paper சேர்க்க</button>
+            <div id="manage-editions-list" style="margin-top:12px"></div>
+            <p style="font-size:12px;color:#aaa">படம்/PDF-ஐ நேரடியாகத் தேர்வு செய்யலாம். PDF கோப்பு 2 MB-க்குள் இருக்க வேண்டும். URL கட்டாயமில்லை; கோப்பும் URL-மும் இரண்டும் கொடுத்தால் கோப்புக்கே முன்னுரிமை.</p>
+        </div>
+
+        <!-- Export Data -->
+        <div class="card">
+            <h2><i class="fa-solid fa-download"></i> தரவுகளை சேமிக்கவும் (Export Data)</h2>
+            <p style="font-size: 13px; color: var(--text-gray);">Admin-ல் சேமிப்பது இந்த browser-ல் மட்டும் உடனடியாகத் தெரியும். மற்ற பார்வையாளர்களுக்கும் காட்ட, கீழே JSON கோப்புகளைப் பதிவிறக்கி hosting-ல் உள்ள கோப்புகளை மாற்றி upload செய்ய வேண்டும்.</p>
+            <button onclick="exportData()"><i class="fa-solid fa-file-arrow-down"></i> அனைத்து JSON கோப்புகளையும் பதிவிறக்கம்</button>
+            <button class="btn-secondary" onclick="window.location.href='index.html'"><i class="fa-solid fa-eye"></i> தளத்தை பார்க்க (View Site)</button>
+        </div>
+    </div>
+
+    <script>
+        let newsData = [];
+        let tickerData = { text: "உண்மை முகம் செய்தி தளத்திற்கு உங்களை வரவேற்கிறோம்." };
+        let base64Image = "";
+        let todayData = {};
+        let adsData = [];
+        let editionsData = [];
+
+        // Load initial data from localStorage or json
+        window.onload = function() {
+            if(localStorage.getItem('um_news')) {
+                newsData = JSON.parse(localStorage.getItem('um_news'));
+            } else {
+                newsData = [
+                    { title: "டெமோ செய்தி", category: "கோவை", description: "உண்மை முகம் டெமோ செய்தி விபரம் இங்கே வரும்.", reporter: "Sadiq", time: "இப்போது", image: "" }
+                ];
+            }
+            if(localStorage.getItem('um_ticker')) {
+                tickerData = JSON.parse(localStorage.getItem('um_ticker'));
+                document.getElementById('ticker-input').value = tickerData.text;
+            }
+            loadExtraData();
+            renderManageList();
+        };
+
+        function checkLogin() {
+            const pin = document.getElementById('pin-input').value;
+            if(pin === '1234') {
+                document.getElementById('login-box').style.display = 'none';
+                document.getElementById('admin-dashboard').style.display = 'block';
+            } else {
+                alert('தவறான கடவுச்சொல்! (Incorrect PIN. Try 1234)');
+            }
+        }
+
+        function previewImage(event) {
+            const file = event.target.files[0];
+            if(file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    // Compress image via canvas
+                    const img = new Image();
+                    img.onload = function() {
+                        const canvas = document.createElement('canvas');
+                        const ctx = canvas.getContext('2d');
+                        const MAX_WIDTH = 800;
+                        const MAX_HEIGHT = 800;
+                        let width = img.width;
+                        let height = img.height;
+
+                        if (width > height) {
+                            if (width > MAX_WIDTH) {
+                                height *= MAX_WIDTH / width;
+                                width = MAX_WIDTH;
+                            }
+                        } else {
+                            if (height > MAX_HEIGHT) {
+                                width *= MAX_HEIGHT / height;
+                                height = MAX_HEIGHT;
+                            }
+                        }
+                        canvas.width = width;
+                        canvas.height = height;
+                        ctx.drawImage(img, 0, 0, width, height);
+                        base64Image = canvas.toDataURL('image/jpeg', 0.85);
+                        
+                        const preview = document.getElementById('img-preview');
+                        preview.src = base64Image;
+                        preview.style.display = 'block';
+                    }
+                    img.src = e.target.result;
+                }
+                reader.readAsDataURL(file);
+            }
+        }
+
+        function addNewNews() {
+            const title = document.getElementById('news-title').value;
+            const category = document.getElementById('news-category').value;
+            const description = document.getElementById('news-desc').value;
+            const reporter = document.getElementById('news-reporter').value;
+
+            if(!title || !description) {
+                alert('தயவுசெய்து தலைப்பு மற்றும் விவரத்தை நிரப்பவும்!');
+                return;
+            }
+
+            const newPost = {
+                title: title,
+                category: category,
+                description: description,
+                reporter: reporter || 'Sadiq',
+                time: 'இப்போது',
+                image: base64Image || ''
+            };
+
+            newsData.unshift(newPost);
+            localStorage.setItem('um_news', JSON.stringify(newsData));
+            
+            // Clear form
+            document.getElementById('news-title').value = '';
+            document.getElementById('news-desc').value = '';
+            document.getElementById('news-img-file').value = '';
+            document.getElementById('img-preview').style.display = 'none';
+            base64Image = '';
+
+            renderManageList();
+            alert('செய்தி வெற்றிகரமாக வெளியிடப்பட்டது! (Published successfully)');
+        }
+
+        function saveTicker() {
+            const text = document.getElementById('ticker-input').value;
+            tickerData = { text: text };
+            localStorage.setItem('um_ticker', JSON.stringify(tickerData));
+            alert('முக்கிய செய்தி பட்டி புதுப்பிக்கப்பட்டது!');
+        }
+
+        function deleteNews(index) {
+            if(confirm('இந்தச் செய்தியை நீக்க விரும்புகிறீர்களா?')) {
+                newsData.splice(index, 1);
+                localStorage.setItem('um_news', JSON.stringify(newsData));
+                renderManageList();
+            }
+        }
+
+        function renderManageList() {
+            const container = document.getElementById('manage-news-list');
+            if(newsData.length === 0) {
+                container.innerHTML = '<p style="color:#888; font-size:13px;">செய்திகள் எதுவும் இல்லை.</p>';
+                return;
+            }
+            container.innerHTML = '';
+            newsData.forEach((item, idx) => {
+                container.innerHTML += `
+                    <div class="news-list-item">
+                        <div>
+                            <strong>[${item.category}]</strong> ${item.title.substring(0, 30)}...
+                        </div>
+                        <button onclick="deleteNews(${idx})"><i class="fa-solid fa-trash"></i> நீக்கு</button>
+                    </div>
+                `;
+            });
+        }
+
+        async function loadExtraData() {
+            async function load(key, file, fallback) { try { const saved=localStorage.getItem(key); if(saved) return JSON.parse(saved); const r=await fetch(file); return await r.json(); } catch(e) { return fallback; } }
+            todayData=await load('um_today','today.json',{}); adsData=await load('um_ads','ads.json',[]); editionsData=await load('um_editions','editions.json',[]);
+            document.getElementById('today-special').value=todayData.special_day||''; document.getElementById('today-good').value=todayData.good_time||''; document.getElementById('today-rahu').value=todayData.rahukalam||''; document.getElementById('today-yama').value=todayData.yamagandam||''; document.getElementById('today-notes').value=todayData.notes||''; document.getElementById('today-thought').value=todayData.thought||'';
+            renderAds(); renderEditions();
+        }
+        function saveToday(){ todayData={special_day:document.getElementById('today-special').value,good_time:document.getElementById('today-good').value,rahukalam:document.getElementById('today-rahu').value,yamagandam:document.getElementById('today-yama').value,notes:document.getElementById('today-notes').value,thought:document.getElementById('today-thought').value}; localStorage.setItem('um_today',JSON.stringify(todayData)); alert('இன்றைய நாள் விவரங்கள் சேமிக்கப்பட்டன.'); }
+        function readFileAsDataURL(file){return new Promise((resolve,reject)=>{const reader=new FileReader();reader.onload=()=>resolve(reader.result);reader.onerror=reject;reader.readAsDataURL(file);});}
+        async function previewAdImage(event){const file=event.target.files[0];if(!file)return;if(!file.type.startsWith('image/')){alert('படக் கோப்பை மட்டும் தேர்வு செய்யவும்.');event.target.value='';return;}try{const data=await readFileAsDataURL(file);const img=new Image();img.onload=()=>{const c=document.createElement('canvas');let w=img.width,h=img.height;const scale=Math.min(1,1200/Math.max(w,h));w=Math.round(w*scale);h=Math.round(h*scale);c.width=w;c.height=h;c.getContext('2d').drawImage(img,0,0,w,h);window.adImageData=c.toDataURL('image/jpeg',0.82);const preview=document.getElementById('ad-image-preview');preview.src=window.adImageData;preview.style.display='block';};img.src=data;}catch(e){alert('படத்தைப் படிக்க முடியவில்லை.');}}
+        async function addAd(){const title=document.getElementById('ad-title').value.trim();if(!title){alert('விளம்பரத் தலைப்பை உள்ளிடவும்');return;}const item={title,category:document.getElementById('ad-category').value,description:document.getElementById('ad-description').value,link:document.getElementById('ad-link').value.trim(),image:window.adImageData||''};adsData.unshift(item);try{localStorage.setItem('um_ads',JSON.stringify(adsData));}catch(e){adsData.shift();alert('படம் சேமிக்க போதுமான browser storage இல்லை. சிறிய படத்தைத் தேர்வு செய்யவும்.');return;}['ad-title','ad-category','ad-description','ad-link'].forEach(id=>document.getElementById(id).value='');document.getElementById('ad-image-file').value='';document.getElementById('ad-image-preview').style.display='none';window.adImageData='';renderAds();alert('விளம்பரம் சேமிக்கப்பட்டது. JSON export செய்து hosting-ல் upload செய்யவும்.');}
+        function deleteAd(i){adsData.splice(i,1);localStorage.setItem('um_ads',JSON.stringify(adsData));renderAds();}
+        function renderAds(){const el=document.getElementById('manage-ads-list');el.innerHTML=adsData.length?adsData.map((a,i)=>`<div class="news-list-item"><span>${a.title}</span><button onclick="deleteAd(${i})">நீக்கு</button></div>`).join(''):'<p style="color:#888">விளம்பரங்கள் இல்லை.</p>';}
+        async function addEdition(){const title=document.getElementById('ep-title').value.trim(),date=document.getElementById('ep-date').value,url=document.getElementById('ep-url').value.trim(),file=document.getElementById('ep-file').files[0];if(!title||!date){alert('தலைப்பு மற்றும் தேதியை நிரப்பவும்');return;}if(!file&&!url){alert('PDF கோப்பைத் தேர்வு செய்யவும் அல்லது PDF URL கொடுக்கவும்.');return;}let pdfData='';if(file){if(file.type!=='application/pdf'&&!file.name.toLowerCase().endsWith('.pdf')){alert('PDF கோப்பை மட்டும் தேர்வு செய்யவும்.');return;}if(file.size>2*1024*1024){alert('PDF கோப்பு 2 MB-ஐ விட பெரியது. 2 MB-க்குள் உள்ள PDF-ஐத் தேர்வு செய்யவும்.');return;}try{pdfData=await readFileAsDataURL(file);}catch(e){alert('PDF கோப்பைப் படிக்க முடியவில்லை.');return;}}const edition={title,date,pdf_url:url,pdf_data:pdfData,description:document.getElementById('ep-description').value};editionsData.unshift(edition);try{localStorage.setItem('um_editions',JSON.stringify(editionsData));}catch(e){editionsData.shift();alert('PDF சேமிக்க browser storage போதவில்லை. சிறிய PDF பயன்படுத்தவும் அல்லது URL கொடுக்கவும்.');return;}['ep-title','ep-date','ep-url','ep-description'].forEach(id=>document.getElementById(id).value='');document.getElementById('ep-file').value='';renderEditions();alert('E-Paper சேமிக்கப்பட்டது. JSON export செய்து hosting-ல் upload செய்யவும்.');}
+        function deleteEdition(i){editionsData.splice(i,1);localStorage.setItem('um_editions',JSON.stringify(editionsData));renderEditions();}
+        function renderEditions(){const el=document.getElementById('manage-editions-list');el.innerHTML=editionsData.length?editionsData.map((e,i)=>`<div class="news-list-item"><span>${e.date||''} – ${e.title||'E-Paper'} ${e.pdf_data?'(PDF கோப்பு)':''}</span><button onclick="deleteEdition(${i})">நீக்கு</button></div>`).join(''):'<p style="color:#888">E-Paper பதிப்புகள் இல்லை.</p>';}
+        function downloadJson(filename,data){const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download=filename;a.click();URL.revokeObjectURL(url);}
+
+        function exportData() {
+            downloadJson('news.json',newsData); downloadJson('ticker.json',tickerData); downloadJson('today.json',todayData); downloadJson('ads.json',adsData); downloadJson('editions.json',editionsData);
+            alert('5 JSON கோப்புகளும் பதிவிறக்கம் செய்யப்பட்டன. Hosting-ல் உள்ள அதே கோப்புகளை மாற்றி Upload செய்தால் பார்வையாளர்களுக்கும் புதுப்பிப்பு தெரியும்.');
+        }
+    </script>
+</body>
+</html>

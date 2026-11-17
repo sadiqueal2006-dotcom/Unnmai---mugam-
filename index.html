@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="ta">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>உண்மை முகம் - உண்மையின் குரல்</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #b30000;
+            --bg-dark: #121212;
+            --card-bg: #1e1e1e;
+            --text-light: #ffffff;
+            --text-gray: #b0b0b0;
+        }
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text-light);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        header {
+            background: var(--bg-dark);
+            padding: 15px;
+            border-bottom: 1px solid #333;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            min-width: 0;
+            flex: 1;
+        }
+        
+        .brand-info {
+            min-width: 0;
+            overflow: hidden;
+        }
+        .brand-info h1 {
+            margin: 0;
+            font-size: 13px;
+            font-weight: bold;
+            color: #ff4d4d;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .brand-info p {
+            margin: 0;
+            font-size: 12px;
+            color: var(--text-gray);
+        }
+        .nav-icons {
+            display: flex;
+            gap: 15px;
+            font-size: 14px;
+        }
+        .nav-icons button {
+            cursor: pointer; padding: 8px 10px; background: #222; color: #fff;
+            border: 0; border-radius: 50%; font-size: 14px;
+        }
+        .search-panel { display:none; padding: 10px 15px; background:#1e1e1e; }
+        .search-panel input { width:100%; box-sizing:border-box; padding:11px; border-radius:7px; border:1px solid #555; background:#111; color:#fff; }
+        @media print { header .nav-icons, .menu-grid, .ticker-bar, .search-panel { display:none !important; } body { background:#fff !important; color:#000 !important; } .news-card { break-inside:avoid; border:1px solid #aaa; background:#fff !important; color:#000 !important; } .news-desc,.news-meta { color:#333 !important; } }
+        .ticker-bar {
+            background: var(--primary);
+            color: white;
+            padding: 10px 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 14px;
+        }
+        .ticker-bar > div { flex: 1; min-width: 0; }
+        #ticker-text { display: inline-block; padding-left: 100%; animation: ticker-scroll 20s linear infinite; }
+        @keyframes ticker-scroll { 0% { transform: translateX(0); } 100% { transform: translateX(-100%); } }
+        .ticker-bar:hover #ticker-text { animation-play-state: paused; }
+        .ticker-title {
+            background: #800000;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-weight: bold;
+            white-space: nowrap;
+        }
+        .menu-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 8px;
+            padding: 15px;
+        }
+        .menu-item {
+            background: var(--card-bg);
+            border: 1px solid #333;
+            border-radius: 30px;
+            padding: 10px 4px;
+            text-align: center;
+            color: white;
+            text-decoration: none;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            font-size: 11px;
+        }
+        .menu-icon {
+            width: 36px;
+            height: 36px;
+            background: var(--primary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 14px;
+        }
+        .container {
+            padding: 15px;
+        }
+        .section-title {
+            font-size: 22px;
+            font-weight: bold;
+            border-left: 4px solid var(--primary);
+            padding-left: 10px;
+            margin-bottom: 15px;
+        }
+        .news-card {
+            background: var(--card-bg);
+            border-radius: 12px;
+            overflow: hidden;
+            margin-bottom: 15px;
+            border: 1px solid #333;
+        }
+        .news-img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            background: #2a2a2a;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #666;
+        }
+        .news-content {
+            padding: 15px;
+        }
+        .news-category {
+            color: var(--primary);
+            font-size: 12px;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        .news-title {
+            font-size: 14px;
+            font-weight: bold;
+            margin: 0 0 8px 0;
+        }
+        .news-desc {
+            font-size: 14px;
+            color: var(--text-gray);
+            margin: 0 0 10px 0;
+        }
+        .news-meta {
+            font-size: 11px;
+            color: #888;
+            border-top: 1px solid #2a2a2a;
+            padding-top: 8px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="brand">
+            <img src="data:image/jpeg;base64,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" alt="Logo" style="width: 45px; height: 45px; border-radius: 50%; object-fit: cover; border: 2px solid #fff; box-shadow: 0 2px 5px rgba(0,0,0,0.3);">
+            <div class="brand-info">
+                <h1>உண்மை முகம்</h1>
+                <p>உண்மையின் குரல்</p>
+            </div>
+        </div>
+        <div class="nav-icons">
+            <button type="button" id="search-toggle" aria-label="செய்தி தேடுக" title="தேடுக"><i class="fa-solid fa-magnifying-glass"></i></button>
+            <button type="button" id="print-page" aria-label="பிரிண்ட்" title="பிரிண்ட் எடு"><i class="fa-solid fa-print"></i></button>
+        </div>
+    </header>
+    <div class="search-panel" id="search-panel"><input type="search" id="news-search" placeholder="செய்திகளைத் தேடுங்கள்..." aria-label="செய்திகளைத் தேடுங்கள்"></div>
+
+    <div class="ticker-bar">
+        <span class="ticker-title">முக்கிய செய்தி</span>
+        <div style="overflow: hidden; white-space: nowrap; width: 100%;">
+            <span id="ticker-text">உண்மை முகம் செய்தி தளத்திற்கு உங்களை வரவேற்கிறோம்.</span>
+        </div>
+    </div>
+
+    <div class="menu-grid">
+        <a href="index.html" class="menu-item">
+            <div class="menu-icon"><i class="fa-solid fa-newspaper"></i></div>
+            <span>செய்திகள்</span>
+        </a>
+        <a href="admin.html" class="menu-item">
+            <div class="menu-icon"><i class="fa-solid fa-user-gear"></i></div>
+            <span>அட்மின்</span>
+        </a>
+        <a href="epaper.html" class="menu-item">
+            <div class="menu-icon"><i class="fa-solid fa-book-open"></i></div>
+            <span>இ-பேப்பர்</span>
+        </a>
+        <a href="today.html" class="menu-item">
+            <div class="menu-icon"><i class="fa-solid fa-calendar-days"></i></div>
+            <span>இன்றைய நாள்</span>
+        </a>
+        <a href="ads.html" class="menu-item">
+            <div class="menu-icon"><i class="fa-solid fa-bullhorn"></i></div>
+            <span>விளம்பரம்</span>
+        </a>
+    </div>
+
+    <div class="container">
+        <div class="section-title">செய்திகள்</div>
+        <div id="news-container">
+            <div class="news-card">
+                <div class="news-img">
+                    <i class="fa-solid fa-image fa-2x"></i>
+                </div>
+                <div class="news-content">
+                    <div class="news-category">கோவை</div>
+                    <h3 class="news-title">டெமோ செய்தி</h3>
+                    <p class="news-desc">உண்மை முகம் டெமோ செய்தி விபரம் இங்கே வரும்.</p>
+                    <div class="news-meta">நிருபர்: Sadiq • இப்போது</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function loadNewsAndTicker() {
+            // Check localStorage first
+            let localNews = localStorage.getItem('um_news');
+            let localTicker = localStorage.getItem('um_ticker');
+
+            if(localNews) {
+                try {
+                    const data = JSON.parse(localNews);
+                    renderNews(data);
+                } catch(e) {
+                    fetchNewsJson();
+                }
+            } else {
+                fetchNewsJson();
+            }
+
+            if(localTicker) {
+                try {
+                    const tData = JSON.parse(localTicker);
+                    if(tData && tData.text) {
+                        document.getElementById('ticker-text').innerText = tData.text;
+                    }
+                } catch(e) {
+                    fetchTickerJson();
+                }
+            } else {
+                fetchTickerJson();
+            }
+        }
+
+        function fetchNewsJson() {
+            fetch('news.json')
+                .then(res => res.json())
+                .then(data => {
+                    if(data && data.length > 0) {
+                        renderNews(data);
+                    }
+                })
+                .catch(err => console.log('Using default view'));
+        }
+
+        let allNews = [];
+        function renderNews(data, keepOriginal = false) {
+            if (!keepOriginal) allNews = Array.isArray(data) ? data : [];
+            const container = document.getElementById('news-container');
+            container.innerHTML = '';
+            allNews.forEach(item => {
+                container.innerHTML += `
+                    <div class="news-card">
+                        ${item.image ? `<img src="${item.image}" class="news-img" alt="News Image">` : `<div class="news-img"><i class="fa-solid fa-image fa-2x"></i></div>`}
+                        <div class="news-content">
+                            <div class="news-category">${item.category || 'செய்தி'}</div>
+                            <h3 class="news-title">${item.title}</h3>
+                            <p class="news-desc">${item.description || ''}</p>
+                            <div class="news-meta">நிருபர்: ${item.reporter || 'Admin'} • ${item.time || ''}</div>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        function fetchTickerJson() {
+            fetch('ticker.json')
+                .then(res => res.json())
+                .then(data => {
+                    if(data && data.text) {
+                        document.getElementById('ticker-text').innerText = data.text;
+                    }
+                })
+                .catch(err => {});
+        }
+
+        document.getElementById('search-toggle').addEventListener('click', () => {
+            const panel = document.getElementById('search-panel');
+            panel.style.display = panel.style.display === 'block' ? 'none' : 'block';
+            if (panel.style.display === 'block') document.getElementById('news-search').focus();
+            else { document.getElementById('news-search').value = ''; renderNews(allNews); }
+        });
+        document.getElementById('news-search').addEventListener('input', function () {
+            const q = this.value.trim().toLocaleLowerCase();
+            const filtered = allNews.filter(n => [n.title,n.category,n.description,n.reporter].join(' ').toLocaleLowerCase().includes(q));
+            renderNews(filtered, true);
+            if (!filtered.length) document.getElementById('news-container').innerHTML = '<p style="color:#aaa;text-align:center">தேடலுக்கு பொருத்தமான செய்திகள் இல்லை.</p>';
+        });
+        document.getElementById('print-page').addEventListener('click', () => window.print());
+        loadNewsAndTicker();
+        if ('serviceWorker' in navigator) window.addEventListener('load', () => navigator.serviceWorker.register('./sw.js').catch(()=>{}));
+    </script>
+</body>
+</html>
